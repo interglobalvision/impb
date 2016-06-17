@@ -32,12 +32,20 @@ chrome.extension.sendMessage({}, function(response) {
 
       // form tv episode torrent naming convention
       if (type === 'episode') {
-        var show = document.body.querySelector('.titleParent a').textContent;
-        var seasonEpisode = document.body.querySelector('.bp_heading').textContent.split(' ');
-        var season = seasonEpisode[1];
-        var episode = seasonEpisode.reverse()[0];
+        // > 'Season 1 | Episode 2'
+        var show = document.body.querySelector('.titleParent a').textContent; 
 
-        // correct the S00E00 syntax
+        // split string into array at spaces
+        // {'Season', '1', '|', 'Episode', '2'}
+        var seasonEpisode = document.body.querySelector('.bp_heading').textContent.split(' ');
+        
+        // [1] is the season number
+        var season = seasonEpisode[1]; 
+
+        // reverse the array so [0] is the episode number
+        var episode = seasonEpisode.reverse()[0]; 
+
+        // correct the S00 and E00 syntax
         if (season < 10) {
           season = '0' + season;
         }
@@ -45,25 +53,32 @@ chrome.extension.sendMessage({}, function(response) {
           episode = '0' + episode;
         }
 
+        // put it together
         title = encodeURI( show + ' S' + season + 'E' + episode ); // whoop!
       }
 
-      // what were searching for
+      // title is the search term
       var searchTerm = title;
 
-      // open a new Http Request
+      // open a new http request
       var request = new XMLHttpRequest();
+      // pirate bay search url + search term
       request.open('GET', 'https://thepiratebay.org/search/' + searchTerm, true);
 
       // do this when the request returns
       request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
-          // Success!
+          // reached the pirate bay and got a response
+
+          // make a new document object (dummy DOM)
           var container = document.implementation.createHTMLDocument('');
+
+          // fill the dummy DOM with the response
           container.open();
           container.write(request.responseText);
           container.close();
 
+          // get our search result table from the dummy DOM
           var searchResult = container.getElementById('searchResult');
 
           if (searchResult) { // stuff!
@@ -75,22 +90,26 @@ chrome.extension.sendMessage({}, function(response) {
             searchResult.querySelector('abbr[title="Seeders"]').innerHTML = 'Seed';
             searchResult.querySelector('abbr[title="Leechers"]').innerHTML = 'Leech';
 
-            // keep only the top 10
+            // get our rows
             var rows = searchResult.querySelectorAll('tbody tr');
 
-
+            // iterate over rows
             for (i = 0; i < rows.length; i++) {
-              if (i > 9) {
+
+              if (i > 9) { // remove all rows over 10
+
                 rows[i].parentNode.removeChild(rows[i]);
-              } else {
+
+              } else { // add 'odd' and 'even' classes to rows for IMDB table styling
+
                 if (i % 2) {
                   rows[i].classList.add('even');
                 } else {
                   rows[i].classList.add('odd');
                 }
+
               }
             }
-            
 
             // remove 'Type' links
             var types = searchResult.querySelectorAll('td.vertTh a');
@@ -120,6 +139,7 @@ chrome.extension.sendMessage({}, function(response) {
             // apply some IMDB table styles
             searchResult.style.borderCollapse = 'collapse';
 
+            // apply padding and fontsize to the table head cells
             var th = searchResult.querySelectorAll('th');
 
             for (i = 0; i < th.length; i++) {
@@ -127,30 +147,34 @@ chrome.extension.sendMessage({}, function(response) {
               th[i].style.fontSize = '.9em';
             }
 
+            // apply padding to the table body cells
             var td = searchResult.querySelectorAll('td');
 
             for (i = 0; i < td.length; i++) {
               td[i].style.padding = '8px 4px 10px';
             }
   
-
+            // replace Loading text with Search results table
             impbContent.innerHTML = searchResult.outerHTML;
 
           } else { // no stuff :(
 
-            console.log('no stuff');
-            impbContent.innerHTML = 'No hits';
+            impbContent.innerHTML = 'No hits'; // replace Loading text with No Hits
 
           } 
         } else {
-          // We reached our target server, but it returned an error
+
+          // reached the pirate bay, but it sent back an error!
           console.log('Server returned error');
+
         }
       };
 
       request.onerror = function() {
-        // There was a connection error of some sort
+
+        // didn't reach the pirate bay :(
         console.log('Error connecting to server');
+
       };
 
       request.send();
