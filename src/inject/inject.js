@@ -167,13 +167,17 @@ chrome.extension.sendMessage({}, function(response) {
           // reached the pirate bay, but it sent back an error!
           console.log('Server returned error');
 
+          impbContent.innerHTML = 'Server error! The Pirate Bay might be down...';
+
         }
       };
 
-      request.onerror = function() {
+      request.onerror = function(e) {
 
         // didn't reach the pirate bay :(
         console.log('Error connecting to server');
+
+        impbContent.innerHTML = 'Error ' + e.target.status;
 
       };
 
