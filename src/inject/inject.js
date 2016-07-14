@@ -169,7 +169,7 @@ chrome.extension.sendMessage({}, function(response) {
 
           console.log('The Pirate Bay might be down...database maintenance?');
 
-          impbContent.innerHTML = 'Server error! The Pirate Bay might be down...';
+          impbContent.innerHTML = 'No body! Database maintenance.';
 
           }
 
