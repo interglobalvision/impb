@@ -1,6 +1,8 @@
 {
-  "name": "IMPB",
-  "version": "0.0.1",
+  "name": "Internet Movie Pirate Bay",
+  "short_name": "IMPB",
+  "author": "Interglobal Vision",
+  "version": "1.0.0",
   "manifest_version": 2,
   "description": "Internet Movie Pirate Bay lists the top 10 Pirate Bay torrents for any movie directly on it's IMDB page.",
   "homepage_url": "http://interglobal.vision",
