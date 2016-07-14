@@ -78,90 +78,101 @@ chrome.extension.sendMessage({}, function(response) {
           container.write(request.responseText);
           container.close();
 
-          // get our search result table from the dummy DOM
-          var searchResult = container.getElementById('searchResult');
+          if (container.body != null) {
 
-          if (searchResult) { // stuff!
+            // get our search result table from the dummy DOM
+            var searchResult = container.getElementById('searchResult');
 
-            // edit the table headings
-            searchResult.querySelector('th:first-of-type').innerHTML = 'Type';
-            searchResult.querySelector('.sortby').innerHTML = 'Name';
-            searchResult.querySelector('.viewswitch').remove();
-            searchResult.querySelector('abbr[title="Seeders"]').innerHTML = 'Seed';
-            searchResult.querySelector('abbr[title="Leechers"]').innerHTML = 'Leech';
+            if (searchResult != null) { // stuff!
 
-            // get our rows
-            var rows = searchResult.querySelectorAll('tbody tr');
+              // edit the table headings
+              searchResult.querySelector('th:first-of-type').innerHTML = 'Type';
+              searchResult.querySelector('.sortby').innerHTML = 'Name';
+              searchResult.querySelector('.viewswitch').remove();
+              searchResult.querySelector('abbr[title="Seeders"]').innerHTML = 'Seed';
+              searchResult.querySelector('abbr[title="Leechers"]').innerHTML = 'Leech';
 
-            // iterate over rows
-            for (i = 0; i < rows.length; i++) {
+              // get our rows
+              var rows = searchResult.querySelectorAll('tbody tr');
 
-              if (i > 9) { // remove all rows over 10
+              // iterate over rows
+              for (i = 0; i < rows.length; i++) {
 
-                rows[i].parentNode.removeChild(rows[i]);
+                if (i > 9) { // remove all rows over 10
 
-              } else { // add 'odd' and 'even' classes to rows for IMDB table styling
+                  rows[i].parentNode.removeChild(rows[i]);
 
-                if (i % 2) {
-                  rows[i].classList.add('even');
-                } else {
-                  rows[i].classList.add('odd');
+                } else { // add 'odd' and 'even' classes to rows for IMDB table styling
+
+                  if (i % 2) {
+                    rows[i].classList.add('even');
+                  } else {
+                    rows[i].classList.add('odd');
+                  }
+
                 }
-
               }
+
+              // remove 'Type' links
+              var types = searchResult.querySelectorAll('td.vertTh a');
+
+              for (i = 0; i < types.length; i++) {
+                var typeParent = types[i].parentNode;
+                while (types[i].firstChild) typeParent.insertBefore(types[i].firstChild, types[i]);
+                typeParent.removeChild(types[i]);
+              }
+
+              // add the Pirate Day domain to User links
+              var users = searchResult.querySelectorAll('.detName a, td a[href*="/user"]');
+
+              for (i = 0; i < users.length; i++) {
+                var oldHref = users[i].getAttribute('href');
+                users[i].setAttribute('href', 'https://thepiratebay.org' + oldHref);
+              }
+
+              // remove weird streaming torrent spam links
+              var bitx = searchResult.querySelectorAll('a[href*="//cdn.bitx.tv"]'); 
+
+              for (i = 0; i < bitx.length; i++) {
+                bitx[i].innerHTML = '';
+                bitx[i].parentNode.removeChild(bitx[i]);
+              }
+
+              // apply some IMDB table styles
+              searchResult.style.borderCollapse = 'collapse';
+
+              // apply padding and fontsize to the table head cells
+              var th = searchResult.querySelectorAll('th');
+
+              for (i = 0; i < th.length; i++) {
+                th[i].style.paddingBottom = '10px';
+                th[i].style.fontSize = '.9em';
+              }
+
+              // apply padding to the table body cells
+              var td = searchResult.querySelectorAll('td');
+
+              for (i = 0; i < td.length; i++) {
+                td[i].style.padding = '8px 4px 10px';
+              }
+    
+              // replace Loading text with Search results table
+              impbContent.innerHTML = searchResult.outerHTML;
+
+            } else { // no stuff :(
+
+              impbContent.innerHTML = 'No hits'; // replace Loading text with No Hits
+
             }
 
-            // remove 'Type' links
-            var types = searchResult.querySelectorAll('td.vertTh a');
+          } else { // no body
 
-            for (i = 0; i < types.length; i++) {
-              var typeParent = types[i].parentNode;
-              while (types[i].firstChild) typeParent.insertBefore(types[i].firstChild, types[i]);
-              typeParent.removeChild(types[i]);
-            }
+          console.log('The Pirate Bay might be down...database maintenance?');
 
-            // add the Pirate Day domain to User links
-            var users = searchResult.querySelectorAll('.detName a, td a[href*="/user"]');
+          impbContent.innerHTML = 'Server error! The Pirate Bay might be down...';
 
-            for (i = 0; i < users.length; i++) {
-              var oldHref = users[i].getAttribute('href');
-              users[i].setAttribute('href', 'https://thepiratebay.org' + oldHref);
-            }
+          }
 
-            // remove weird streaming torrent spam links
-            var bitx = searchResult.querySelectorAll('a[href*="//cdn.bitx.tv"]'); 
-
-            for (i = 0; i < bitx.length; i++) {
-              bitx[i].innerHTML = '';
-              bitx[i].parentNode.removeChild(bitx[i]);
-            }
-
-            // apply some IMDB table styles
-            searchResult.style.borderCollapse = 'collapse';
-
-            // apply padding and fontsize to the table head cells
-            var th = searchResult.querySelectorAll('th');
-
-            for (i = 0; i < th.length; i++) {
-              th[i].style.paddingBottom = '10px';
-              th[i].style.fontSize = '.9em';
-            }
-
-            // apply padding to the table body cells
-            var td = searchResult.querySelectorAll('td');
-
-            for (i = 0; i < td.length; i++) {
-              td[i].style.padding = '8px 4px 10px';
-            }
-  
-            // replace Loading text with Search results table
-            impbContent.innerHTML = searchResult.outerHTML;
-
-          } else { // no stuff :(
-
-            impbContent.innerHTML = 'No hits'; // replace Loading text with No Hits
-
-          } 
         } else {
 
           // reached the pirate bay, but it sent back an error!
