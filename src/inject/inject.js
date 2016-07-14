@@ -161,13 +161,13 @@ chrome.extension.sendMessage({}, function(response) {
 
             } else { // no stuff :(
 
-              impbContent.innerHTML = 'No hits'; // replace Loading text with No Hits
+              impbContent.innerHTML = '<strong>No hits!</strong>'; // replace Loading text with No Hits
 
             }
 
           } else { // no body
 
-          console.log('The Pirate Bay might be down...database maintenance?');
+          console.log('The Pirate Bay might be down...database maintenance? Wait a moment and <strong>refresh!</strong>');
 
           impbContent.innerHTML = 'No body! Database maintenance.';
 
@@ -178,7 +178,7 @@ chrome.extension.sendMessage({}, function(response) {
           // reached the pirate bay, but it sent back an error!
           console.log('Server returned error');
 
-          impbContent.innerHTML = 'Server error! The Pirate Bay might be down...';
+          impbContent.innerHTML = 'Server error! The Pirate Bay might be down... Wait a moment and <strong>refresh!</strong>';
 
         }
       };
