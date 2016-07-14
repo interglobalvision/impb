@@ -18,7 +18,6 @@
         "http://www.imdb.com/title/*"
       ],
       "js": [
-        "src/library/jquery.min.js",
         "src/inject/inject.js"
       ]
     }
