@@ -1,6 +1,6 @@
 chrome.extension.sendMessage({}, function(response) {
   var readyStateCheckInterval = setInterval(function() {
-    if (document.readyState === "complete") {
+    if (document.readyState === "interactive") {
       clearInterval(readyStateCheckInterval);
 
       var impbContainer = document.getElementById('main_bottom');
