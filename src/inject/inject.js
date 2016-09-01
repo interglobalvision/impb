@@ -24,7 +24,7 @@ chrome.extension.sendMessage({}, function(response) {
       impb.appendChild( impbContent );
 
       // get the title
-      var title = encodeURI( document.body.querySelector('.title_wrapper h1').textContent );
+      var title = encodeURI( document.body.querySelector('h1').textContent );
 
       // get the type of video
       var ogType = document.querySelector('meta[property="og:type"').getAttribute('content');
