@@ -63,7 +63,7 @@ chrome.extension.sendMessage({}, function(response) {
       // open a new http request
       var request = new XMLHttpRequest();
       // pirate bay search url + search term
-      request.open('GET', 'https://thepiratebay.org/search/' + searchTerm, true);
+      request.open('GET', 'https://thepiratebay.org/search/' + searchTerm + '/0/99/200', true);
 
       // do this when the request returns
       request.onload = function() {
