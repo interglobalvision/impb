@@ -24,7 +24,7 @@ chrome.extension.sendMessage({}, function(response) {
       impb.appendChild( impbContent );
 
       // get the title
-      var title = encodeURI( document.body.querySelector('h1').textContent );
+      var title = encodeURI( document.querySelector('meta[property="og:title"').getAttribute('content') );
 
       // get the type of video
       var ogType = document.querySelector('meta[property="og:type"').getAttribute('content');
@@ -33,17 +33,17 @@ chrome.extension.sendMessage({}, function(response) {
       // form tv episode torrent naming convention
       if (type === 'episode') {
         // > 'Season 1 | Episode 2'
-        var show = document.body.querySelector('.titleParent a').textContent; 
+        var show = document.body.querySelector('.titleParent a').textContent;
 
         // split string into array at spaces
         // {'Season', '1', '|', 'Episode', '2'}
         var seasonEpisode = document.body.querySelector('.bp_heading').textContent.split(' ');
-        
+
         // [1] is the season number
-        var season = seasonEpisode[1]; 
+        var season = seasonEpisode[1];
 
         // reverse the array so [0] is the episode number
-        var episode = seasonEpisode.reverse()[0]; 
+        var episode = seasonEpisode.reverse()[0];
 
         // correct the S00 and E00 syntax
         if (season < 10) {
@@ -64,6 +64,8 @@ chrome.extension.sendMessage({}, function(response) {
       var request = new XMLHttpRequest();
       // pirate bay search url + search term
       request.open('GET', 'https://thepiratebay.org/search/' + searchTerm + '/0/99/200', true);
+
+      console.log('https://thepiratebay.org/search/' + searchTerm + '/0/99/200');
 
       // do this when the request returns
       request.onload = function() {
@@ -131,7 +133,7 @@ chrome.extension.sendMessage({}, function(response) {
               }
 
               // remove weird streaming torrent spam links
-              var bitx = searchResult.querySelectorAll('a[href*="//cdn.bitx.tv"]'); 
+              var bitx = searchResult.querySelectorAll('a[href*="//cdn.bitx.tv"]');
 
               for (i = 0; i < bitx.length; i++) {
                 bitx[i].innerHTML = '';
@@ -155,7 +157,7 @@ chrome.extension.sendMessage({}, function(response) {
               for (i = 0; i < td.length; i++) {
                 td[i].style.padding = '8px 4px 10px';
               }
-    
+
               // replace Loading text with Search results table
               impbContent.innerHTML = searchResult.outerHTML;
 
