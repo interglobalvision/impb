@@ -65,8 +65,6 @@ chrome.extension.sendMessage({}, function(response) {
       // pirate bay search url + search term
       request.open('GET', 'https://thepiratebay.org/search/' + searchTerm + '/0/99/200', true);
 
-      console.log('https://thepiratebay.org/search/' + searchTerm + '/0/99/200');
-
       // do this when the request returns
       request.onload = function() {
         if (request.status >= 200 && request.status < 400) {
