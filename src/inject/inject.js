@@ -23,9 +23,6 @@ chrome.extension.sendMessage({}, function(response) {
       impbContent.innerHTML = 'Loading...';
       impb.appendChild( impbContent );
 
-      // get the title
-      var title = encodeURI(document.querySelector('meta[property="og:title"').getAttribute('content'));
-
       // get the type of video
       var ogType = document.querySelector('meta[property="og:type"').getAttribute('content');
       var type = ogType.slice(6);
@@ -35,23 +32,15 @@ chrome.extension.sendMessage({}, function(response) {
         // > 'Season 1 | Episode 2'
         var show = document.body.querySelector('.titleParent a').textContent;
 
-        console.log(show);
-
         // split string into array at spaces
         // {'Season', '1', '|', 'Episode', '2'}
         var seasonEpisode = document.body.querySelector('.bp_heading').textContent.split(' ');
 
-        console.log(seasonEpisode);
-
         // [1] is the season number
         var season = seasonEpisode[1];
 
-        console.log(season);
-
         // reverse the array so [0] is the episode number
         var episode = seasonEpisode.reverse()[0];
-
-        console.log(episode);
 
         // correct the S00 and E00 syntax
         if (season < 10) {
@@ -64,10 +53,19 @@ chrome.extension.sendMessage({}, function(response) {
         // put it together
         title = encodeURI(show + ' S' + season + 'E' + episode); // whoop!
 
-        console.log(title);
+      } else if (type === 'tv_show') {
+
+        // get the show title, and trim trailing whitespace
+        var title = encodeURI(document.body.querySelector('.title_wrapper h1').textContent.replace(/\s+$/, ''));
+
+      } else {
+
+        // get the movie title
+        var title = encodeURI(document.querySelector('meta[property="og:title"').getAttribute('content'));
+
       }
 
-      // title is the search term
+      // title is the search term, and strip apostrophes
       var searchTerm = title.replace(/'/g, '');
 
       // open a new http request
