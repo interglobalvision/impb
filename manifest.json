@@ -2,7 +2,7 @@
   "name": "Internet Movie Pirate Bay",
   "short_name": "IMPB",
   "author": "Interglobal Vision",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "manifest_version": 2,
   "description": "The Pirate Bay search results directly on IMDB!",
   "homepage_url": "http://interglobal.vision",
