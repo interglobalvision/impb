@@ -24,7 +24,7 @@ chrome.extension.sendMessage({}, function(response) {
       impb.appendChild( impbContent );
 
       // get the title
-      var title = encodeURI( document.querySelector('meta[property="og:title"').getAttribute('content') );
+      var title = encodeURI(document.querySelector('meta[property="og:title"').getAttribute('content'));
 
       // get the type of video
       var ogType = document.querySelector('meta[property="og:type"').getAttribute('content');
@@ -35,15 +35,23 @@ chrome.extension.sendMessage({}, function(response) {
         // > 'Season 1 | Episode 2'
         var show = document.body.querySelector('.titleParent a').textContent;
 
+        console.log(show);
+
         // split string into array at spaces
         // {'Season', '1', '|', 'Episode', '2'}
         var seasonEpisode = document.body.querySelector('.bp_heading').textContent.split(' ');
 
+        console.log(seasonEpisode);
+
         // [1] is the season number
         var season = seasonEpisode[1];
 
+        console.log(season);
+
         // reverse the array so [0] is the episode number
         var episode = seasonEpisode.reverse()[0];
+
+        console.log(episode);
 
         // correct the S00 and E00 syntax
         if (season < 10) {
@@ -54,16 +62,20 @@ chrome.extension.sendMessage({}, function(response) {
         }
 
         // put it together
-        title = encodeURI( show + ' S' + season + 'E' + episode ); // whoop!
+        title = encodeURI(show + ' S' + season + 'E' + episode); // whoop!
+
+        console.log(title);
       }
 
       // title is the search term
-      var searchTerm = title;
+      var searchTerm = title.replace(/'/g, '');
 
       // open a new http request
       var request = new XMLHttpRequest();
       // pirate bay search url + search term
       request.open('GET', 'https://thepiratebay.org/search/' + searchTerm + '/0/99/200', true);
+
+      console.log('https://thepiratebay.org/search/' + searchTerm + '/0/99/200');
 
       // do this when the request returns
       request.onload = function() {
